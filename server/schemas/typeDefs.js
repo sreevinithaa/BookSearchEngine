@@ -4,11 +4,11 @@ const typeDefs = gql`
   type BookSchema {
     _id: ID!
     authors: [String]
-    description:string!
-    bookId:string!
-    image:string
-    link:string
-    title:string!
+    description:String!
+    bookId:String!
+    image:String
+    link:String
+    title:String!
   }
 
   type User {
