@@ -21,7 +21,7 @@ const typeDefs = gql`
 
   type Query {
     Books: [BookSchema]
-    user(username: String!): User
+    user(_id:ID,username: String): User
   }
 
   type Mutation {

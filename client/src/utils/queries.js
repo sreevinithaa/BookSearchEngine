@@ -15,8 +15,8 @@ export const QUERY_BOOKS = gql`
 `;
 
 export const QUERY_SINGLE_THOUGHT = gql`
-  query getuser($username: String!) {
-    user(username: $username) {
+  query getuser($_id:ID,$username: String!) {
+    user(_id:#_id,username: $username) {
         _id
         username
         email
