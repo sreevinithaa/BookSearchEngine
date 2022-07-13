@@ -27,8 +27,8 @@ const typeDefs = gql`
   type Mutation {
     createUser(username: String!, email: String!,password:String!): User
     login(username: String!, email: String!,password:String!): User
-    saveBook(user:User, body:BookSchema ): User
-    deleteBook(user:User, params:BookSchema): User
+    saveBook(_id:ID!, bookId:String!,authors:String!,description:String!,title:String!,link :String ): User
+    deleteBook( _id:ID!, bookId:String!): User
   }
 `;
 
