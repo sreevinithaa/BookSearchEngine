@@ -1,6 +1,6 @@
 const { BookSchema, User } = require("../models");
 const { AuthenticationError } = require("apollo-server-express");
-
+const { signToken } = require('../utils/auth');
 const resolvers = {
   Query: {
     Books: async () => {
@@ -13,7 +13,8 @@ const resolvers = {
   Mutation: {
     createUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
-      return user;
+      const token = signToken(user);
+      return { token, user };
     },
     login: async (parent, { username, password }) => {
       // Look up the user by the provided email address. Since the `email` field is unique, we know that only one person will exist with that email
@@ -37,7 +38,8 @@ const resolvers = {
       // If email and password are correct, sign user into the application with a JWT
 
       // Return an `Auth` object that consists of the signed token and user's information
-      return user;
+      const token = signToken(user);
+      return { token, user };
     },
     saveBook: async (
       parent,
