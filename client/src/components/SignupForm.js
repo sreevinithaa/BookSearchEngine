@@ -33,15 +33,13 @@ const SignupForm = () => {
     }
 
     try {
-      const { token, user } = await createUser({
+      const response = await createUser({
         variables: {
-          username: userFormData.username,
-          password: userFormData.password,
-          email: userFormData.password,
+         ...userFormData
         },
       });
-
-      console.log(user);
+      const { token }=response.data.createUser;
+      console.log(response);
       Auth.login(token);
     } catch (err) {
       console.error(err);
