@@ -42,13 +42,13 @@ const resolvers = {
     },
     saveBook: async (
       parent,
-      { _id, bookId, authors, description, title, link }
+      { _id, bookId, authors, description, title, image }
     ) => {
       return User.findOneAndUpdate(
         { _id: _id },
         {
           $addToSet: {
-            savedBooks: { bookId, authors, description, title, link },
+            savedBooks: { bookId, authors, description, title, image },
           },
         },
         {

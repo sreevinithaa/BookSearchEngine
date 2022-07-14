@@ -68,15 +68,16 @@ const SearchBooks = () => {
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+const profile=Auth.getProfile();
     if (!token) {
       return false;
     }
 
     try {
-      const response = await saveBook({
+      console.log(bookToSave);
+      const {data} = await saveBook({
         variables: {
-          _id: token.user._id,
+          _id: profile.data._id,
           bookId,
           authors: bookToSave.authors,
           title: bookToSave.title,
@@ -85,10 +86,10 @@ const SearchBooks = () => {
         },
       });
 
-      const updatedbook = response.savedBooks.find(
+      const updatedbook = data.saveBook.savedBooks.find(
         (book) => book.bookId === bookId
       );
-      console.log(response);
+     
       console.log(updatedbook);
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, updatedbook.bookId]);
