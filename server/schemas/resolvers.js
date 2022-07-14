@@ -3,11 +3,11 @@ const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require('../utils/auth');
 const resolvers = {
   Query: {
-    Books: async () => {
-      return BookSchema.find({});
-    },
+   
     user: async (parent, { _id, username }) => {
-      return User.findOne({ $or: [{ _id: _id }, { username: username }] });
+      const params_1 = _id ? { _id } : {};
+      const params_2 = username ? { username } : {};
+      return await User.findOne({ $or: [{ _id: params_1 }, { username: username }] });
     },
   },
   Mutation: {

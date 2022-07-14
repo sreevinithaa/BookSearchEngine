@@ -6,7 +6,7 @@ import Auth from "../utils/auth";
 
 const SignupForm = () => {
   // set initial form state
-  const [createUser, { error, data }] = useMutation(CREATE_USER);
+  const [createUser] = useMutation(CREATE_USER);
   const [userFormData, setUserFormData] = useState({
     username: "",
     email: "",
