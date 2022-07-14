@@ -18,24 +18,27 @@ const SavedBooks = () => {
   const [deleteBook] = useMutation(DELETE_BOOK);
   // use this to determine if `useEffect()` hook needs to run again
   const userDataLength = Object.keys(userData).length;
-
-  const [getUser] = useQuery(QUERY_GET_USER);
+  const userprofile = Auth.getProfile();
+  
+  const { data } = useQuery(QUERY_GET_USER, {
+    // pass URL parameter
+    variables: { _id: userprofile.data._id },
+  });
+  
+  
+ 
   useEffect(() => {
     const getUserData = async () => {
-      const userprofile = Auth.getProfile();
-      console.log(userprofile);
-      const response = await getUser({
-        // pass URL parameter
-        variables: { _id: userprofile._id, username: userprofile.username },
-      });
-      console.log(response);
-      if (response.data.user) {
-        setUserData(response.data.user.savedBooks);
+     
+     
+      if (data) {
+       
+        setUserData(data.getUser);
       }
     };
 
     getUserData();
-  }, [userDataLength]);
+  }, [data]);
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -46,12 +49,12 @@ const SavedBooks = () => {
     }
 
     try {
-      const userid = userprofile._id;
-      const updatedUser = await deleteBook({
+      const userid = userprofile.data._id;
+      const {data} = await deleteBook({
         variables: { _id: userid, bookId },
       });
 
-      setUserData(updatedUser);
+      setUserData(data.deleteBook);
       // upon success, remove book's id from locagetUserDatalStorage
       removeBookId(bookId);
     } catch (err) {
