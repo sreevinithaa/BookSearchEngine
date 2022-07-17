@@ -4,15 +4,16 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
   Query: {
    
-    getUser: async (parent, { _id, username }) => {
-     
-      return await User.findOne({ $or: [{ _id: _id }, { username: username }] }).populate("savedBooks");
+    me: async (parent, args,context) => {
+      
+      return await User.findOne({ _id:context.user._id});
     },
   },
   Mutation: {
-    createUser: async (parent, { username, email, password }) => {
+    addUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
+      
       return { token, user };
     },
     login: async (parent, { username, password }) => {
@@ -38,14 +39,17 @@ const resolvers = {
 
       // Return an `Auth` object that consists of the signed token and user's information
       const token = signToken(user);
+      
       return { token, user };
     },
     saveBook: async (
       parent,
-      { _id, bookId, authors, description, title, image }
+      {  bookId, authors, description, title, image },context
     ) => {
+      console.log("fromserver");
+      console.log(context);
       return User.findOneAndUpdate(
-        { _id: _id },
+        { _id: context.user._id },
         {
           $addToSet: {
             savedBooks: { bookId, authors, description, title, image },
@@ -57,9 +61,9 @@ const resolvers = {
         }
       );
     },
-    deleteBook: async (parent, { _id, bookId }) => {
+    removeBook: async (parent, { bookId },context) => {
       return await User.findOneAndUpdate(
-        { _id: _id },
+        { _id: context.user._id },
         { $pull: { savedBooks: { bookId: bookId } } },
         { new: true }
       );

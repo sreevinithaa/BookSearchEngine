@@ -7,33 +7,29 @@ import {
   Card,
   Button,
 } from "react-bootstrap";
-import { DELETE_BOOK } from "../utils/mutations";
-import { QUERY_GET_USER } from "../utils/queries";
+import { REMOVE_BOOK } from "../utils/mutations";
+import { GET_ME } from "../utils/queries";
 
 import Auth from "../utils/auth";
 import { removeBookId } from "../utils/localStorage";
 
 const SavedBooks = () => {
   const [userData, setUserData] = useState({});
-  const [deleteBook] = useMutation(DELETE_BOOK);
+  const [removeBook] = useMutation(REMOVE_BOOK);
   // use this to determine if `useEffect()` hook needs to run again
-  const userDataLength = Object.keys(userData).length;
-  const userprofile = Auth.getProfile();
-  
-  const { data } = useQuery(QUERY_GET_USER, {
-    // pass URL parameter
-    variables: { _id: userprofile.data._id },
-  });
-  
-  
- 
+  let userDataLength = Object.keys(userData).length;
+  const { loading, data }  = useQuery(GET_ME);
+
   useEffect(() => {
     const getUserData = async () => {
-     
-     
+
       if (data) {
-       
-        setUserData(data.getUser);
+        setUserData(data.me);
+        userDataLength = Object.keys(userData).length;
+      }
+      else
+      {
+        setUserData({});
       }
     };
 
@@ -43,18 +39,17 @@ const SavedBooks = () => {
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-    const userprofile = Auth.getProfile();
+
     if (!token) {
       return false;
     }
 
     try {
-      const userid = userprofile.data._id;
-      const {data} = await deleteBook({
-        variables: { _id: userid, bookId },
+      const { data } = await removeBook({
+        variables: { bookId },
       });
 
-      setUserData(data.deleteBook);
+      setUserData(data.removeBook);
       // upon success, remove book's id from locagetUserDatalStorage
       removeBookId(bookId);
     } catch (err) {
@@ -66,7 +61,7 @@ const SavedBooks = () => {
   if (!userDataLength) {
     return <h2>LOADING...</h2>;
   }
-
+  
   return (
     <>
       <Jumbotron fluid className="text-light bg-dark">

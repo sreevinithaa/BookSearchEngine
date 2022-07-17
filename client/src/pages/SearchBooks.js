@@ -8,7 +8,7 @@ import {
   Card,
   CardColumns,
 } from "react-bootstrap";
-import {  useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import Auth from "../utils/auth";
 import { searchGoogleBooks } from "../utils/API";
 import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
@@ -68,16 +68,14 @@ const SearchBooks = () => {
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-const profile=Auth.getProfile();
+
     if (!token) {
       return false;
     }
 
     try {
-      console.log(bookToSave);
-      const {data} = await saveBook({
+      const { data } = await saveBook({
         variables: {
-          _id: profile.data._id,
           bookId,
           authors: bookToSave.authors,
           title: bookToSave.title,
@@ -89,8 +87,7 @@ const profile=Auth.getProfile();
       const updatedbook = data.saveBook.savedBooks.find(
         (book) => book.bookId === bookId
       );
-     
-      console.log(updatedbook);
+
       // if book successfully saves to user's account, save book id to state
       setSavedBookIds([...savedBookIds, updatedbook.bookId]);
     } catch (err) {
